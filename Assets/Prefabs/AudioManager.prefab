@@ -309,3 +309,4 @@ MonoBehaviour:
   finish: {fileID: 8300000, guid: 2667a0a008b044e218b63df62e2be749, type: 3}
   death: {fileID: 8300000, guid: cabfae866cab347928b74b7d0ca6bfa9, type: 3}
   trampoline: {fileID: 8300000, guid: 80e397195ea2940b69ee7bdbded856a5, type: 3}
+  rockHit: {fileID: 8300000, guid: 7e26c9daf4c32483b9c2790e662d3f1b, type: 3}

@@ -23,7 +23,7 @@ public class PlayerLife : MonoBehaviour
         player = GetComponent<Rigidbody2D>();
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    public void OnCollisionEnter2D(Collision2D collision) //TODO make protected
     {
         if (collision.gameObject.CompareTag("Trap"))
         {
