@@ -40,7 +40,7 @@ public class SpikeHead : PlayerLife
         initialPosition = transform.position;
     }
 
-    // Update is called once per frame
+
     void Update()
     {
         if (attacking)
@@ -60,7 +60,7 @@ public class SpikeHead : PlayerLife
         CalculateDirections();
         //Check if spikehead see player
 
-        for (int i = 0; i < directions.Length; i++) //TODO try foreach
+        for (int i = 0; i < directions.Length; i++)
         {
             Debug.DrawRay(transform.position, directions[i], Color.red);
             RaycastHit2D hit = Physics2D.Raycast(transform.position, directions[i], range, playerLayer);
@@ -109,7 +109,7 @@ public class SpikeHead : PlayerLife
         audioManager.PlaySFX(audioManager.rockHit);
         base.OnCollisionEnter2D(collision);
         Stop();
-        ResetPosition(); //TODO fix reset dont detect player after reset position
+        ResetPosition();
     }
 
     private void ResetPosition()
@@ -124,7 +124,7 @@ public class SpikeHead : PlayerLife
         float elapsedTime = 0f;
         Vector3 startingPosition = transform.position;
 
-        while (elapsedTime < 10f)  // You can adjust the duration of the movement
+        while (elapsedTime < 1f)  // Detection time
         {
             transform.position = Vector3.Lerp(startingPosition, initialPosition, elapsedTime);
             elapsedTime += Time.deltaTime;
