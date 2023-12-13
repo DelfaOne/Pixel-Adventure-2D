@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -20,13 +21,17 @@ public class PlayerMovement : MonoBehaviour
     private bool canWallSlide;
     private bool facingRight = true;
     private bool canWallJump = true;
-    private bool canMove;
     private int facingDirection = 1;
+    private bool isAttacking;
+    private bool canAttack = true;
 
-    [SerializeField] private Vector2 wallJumpDirection = new Vector2(5, 15);
+    
+
 
     private float horizontalDirection = 0f;
-    private enum MovementState { idle, run, jump, fall, wallJump }
+    private enum MovementState { idle, run, jump, fall, wallJump, attack }
+
+    [SerializeField] private Vector2 wallJumpDirection = new Vector2(5, 15);
 
     [Header("Layer")]
     [SerializeField] private LayerMask jumpableGround;
@@ -34,6 +39,13 @@ public class PlayerMovement : MonoBehaviour
     [Header("Player settings")]
     [SerializeField] private float moveSpeed = 7f;
     [SerializeField] private float jumpForce = 14f;
+    [SerializeField] private float attackCoolDown = 1.5f;
+
+    [Header("Attack settings")]
+    public Transform attackPoint;
+    [SerializeField] public float attackRange = 0.5f;
+    [SerializeField] public int attackDamage = 20;
+    public LayerMask enemyLayers;
 
     [Header("Collisions Info")]
     [SerializeField] private Transform wallCheck;
@@ -42,6 +54,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private bool isWallSliding;
 
     AudioManager audioManager;
+
 
     private void Awake()
     {
@@ -120,6 +133,10 @@ public class PlayerMovement : MonoBehaviour
         {
             state = MovementState.wallJump;
         }
+        else if (isAttacking)
+        {
+            state = MovementState.attack;
+        }
 
         anim.SetInteger("state", (int)state);
     }
@@ -176,6 +193,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void PlayerInputController()
     {
+        isAttacking = false;
         if (Input.GetButtonDown("Jump"))
         {
             if (isWallSliding && canWallJump)
@@ -189,6 +207,32 @@ public class PlayerMovement : MonoBehaviour
                 Debug.Log("Jump");
             }
         }
+        else if (Input.GetKeyDown(KeyCode.E) && canAttack)
+        {
+            Debug.Log("Attack");
+            Attack();
+        }
+    }
+
+    private void Attack()
+    {
+        isAttacking = true;
+        canAttack = false;
+        StartCoroutine(AttackCooldown());
+
+        //Detect enemies in attack range
+        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayers);
+
+        foreach (Collider2D enemy in hitEnemies)
+        {
+            enemy.GetComponent<Enemy>().TakeDamage(attackDamage);
+        }
+    }
+
+    private IEnumerator AttackCooldown()
+    {
+        yield return new WaitForSecondsRealtime(attackCoolDown);
+        canAttack = true;
     }
 
     private void Jump()
@@ -221,5 +265,13 @@ public class PlayerMovement : MonoBehaviour
     private void OnDrawGizmos()
     {
         Gizmos.DrawLine(wallCheck.position, new Vector3(wallCheck.position.x + wallCheckDistance, wallCheck.position.y, wallCheck.position.z));
+        if (attackPoint == null)
+        {
+            return;
+        }
+        else
+        {
+            Gizmos.DrawWireSphere(attackPoint.position, attackRange);
+        }
     }
 }
