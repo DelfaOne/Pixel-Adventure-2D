@@ -65,7 +65,7 @@ public class PlayerLife : MonoBehaviour
     private void ReduceHealth(float amount)
     {
         health -= amount;
-        //TODO add damage sound
+        audioManager.PlaySFX(audioManager.hurt);
         //TODO add invicibility time during hit
         if (health <= 0)
         {

@@ -23,7 +23,6 @@ public class PlayerMovement : MonoBehaviour
     private bool canWallJump = true;
     private int facingDirection = 1;
     private bool isAttacking;
-    private bool canAttack = true;
 
     
 
@@ -207,7 +206,7 @@ public class PlayerMovement : MonoBehaviour
                 Debug.Log("Jump");
             }
         }
-        else if (Input.GetKeyDown(KeyCode.E) && canAttack)
+        else if (Input.GetKeyDown(KeyCode.E) && !isAttacking)
         {
             Debug.Log("Attack");
             Attack();
@@ -217,7 +216,6 @@ public class PlayerMovement : MonoBehaviour
     private void Attack()
     {
         isAttacking = true;
-        canAttack = false;
         StartCoroutine(AttackCooldown());
 
         //Detect enemies in attack range
@@ -232,7 +230,6 @@ public class PlayerMovement : MonoBehaviour
     private IEnumerator AttackCooldown()
     {
         yield return new WaitForSecondsRealtime(attackCoolDown);
-        canAttack = true;
     }
 
     private void Jump()

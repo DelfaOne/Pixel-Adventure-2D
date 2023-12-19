@@ -20,6 +20,7 @@ public class AudioManager : MonoBehaviour
     public AudioClip death;
     public AudioClip trampoline;
     public AudioClip rockHit;
+    public AudioClip hurt;
 
 
     private int currentScene;
